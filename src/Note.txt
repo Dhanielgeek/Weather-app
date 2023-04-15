@@ -1,0 +1,46 @@
+my Api Key == dbd07579425315f4c22d13a0cc14a4c7
+
+
+
+import React, { useState } from 'react';
+import axios from 'axios';
+
+function WeatherApp() {
+  const [city, setCity] = useState('');
+  const [weatherData, setWeatherData] = useState(null);
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      const response = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=YOUR_API_KEY`);
+      setWeatherData(response.data);
+      setErrorMessage('');
+    } catch (error) {
+      setErrorMessage('City not found. Please enter a valid city name.');
+    }
+  };
+
+  return (
+    <div>
+      <h1>Weather App</h1>
+      <form onSubmit={handleSubmit}>
+        <label>
+          Enter City:
+          <input type="text" value={city} onChange={(event) => setCity(event.target.value)} />
+        </label>
+        <button type="submit">Get Weather</button>
+      </form>
+      {errorMessage && <p>{errorMessage}</p>}
+      {weatherData && (
+        <div>
+          <h2>{weatherData.name}, {weatherData.sys.country}</h2>
+          <p>Temperature: {weatherData.main.temp} °F</p>
+          <p>Weather: {weatherData.weather[0].description}</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default WeatherApp;
